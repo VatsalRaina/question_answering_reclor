@@ -162,7 +162,8 @@ def main(args):
             model.zero_grad()
             verification = model(input_ids=b_input_ids, attention_mask=b_att_msks, token_type_ids=b_tok_typ_ids)
             loss = criterion(verification, b_labs)
-
+            total_loss += loss.item()
+            print(loss.item())
             optimizer.zero_grad()
             loss.backward()
             # Clip the norm of the gradients to 1.0.
