@@ -156,9 +156,9 @@ def main(args):
                 # Report progress.
                 print('  Batch {:>5,}  of  {:>5,}.    Elapsed: {:}.'.format(step, len(train_dataloader), elapsed))
             b_input_ids = batch[0].to(device)
-            b_tok_typ_ids = batch[3].to(device)
-            b_att_msks = batch[4].to(device)
-            b_labs = batch[5].to(device)
+            b_tok_typ_ids = batch[1].to(device)
+            b_att_msks = batch[2].to(device)
+            b_labs = batch[3].to(device)
             model.zero_grad()
             verification = model(input_ids=b_input_ids, attention_mask=b_att_msks, token_type_ids=b_tok_typ_ids)
             loss = criterion(verification, b_labs)
