@@ -108,3 +108,7 @@ def main(args):
         pred_verification_logits += verification_logits.detach().cpu().numpy().tolist()
     pred_verification_logits = np.asarray(pred_verification_logits)
     np.save(args.predictions_save_path + "verification_probs_all.npy", pred_verification_logits)
+
+if __name__ == '__main__':
+    args = parser.parse_args()
+    main(args)
