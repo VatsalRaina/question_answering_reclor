@@ -67,7 +67,6 @@ def main(args):
     for item in test_data:
         context = item["context"]
         question = item["question"]
-        correct_ans = item["label"]
         for i, ans in enumerate(item["answers"]):
             combo = context + " [SEP] " + question + " " + ans
             inp_ids = tokenizer.encode(combo)
