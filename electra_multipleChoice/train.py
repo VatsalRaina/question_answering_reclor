@@ -82,6 +82,8 @@ def main(args):
         question = item["question"]
         lab = item["label"]
         labels.append(lab)
+        four_inp_ids = []
+        four_tok_type_ids = []
         for i, ans in enumerate(item["answers"]):
             combo = context + " [SEP] " + question + " " + ans
             inp_ids = tokenizer.encode(combo)
