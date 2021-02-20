@@ -104,7 +104,7 @@ def main(args):
         attention_masks.append(sen_attention_masks)
     # Convert to torch tensors
     labels = torch.tensor(labels)
-    labels = labels.float().to(device)
+    labels = labels.long().to(device)
     input_ids = torch.tensor(input_ids)
     input_ids = input_ids.long().to(device)
     token_type_ids = torch.tensor(token_type_ids)
