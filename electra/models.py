@@ -13,6 +13,7 @@ class ElectraClassificationHead(torch.nn.Module):
         electra_large = "google/electra-large-discriminator"
         self.electra = ElectraModel.from_pretrained(electra_large)
         self.dense = torch.nn.Linear(self.electra.config.hidden_size, self.electra.config.hidden_size)
+        self.dense2 = torch.nn.Linear(self.electra.config.hidden_size, self.electra.config.hidden_size)
         self.dropout = torch.nn.Dropout(self.electra.config.hidden_dropout_prob)
         self.out_proj = torch.nn.Linear(self.electra.config.hidden_size, 1)
         self.gelu = torch.nn.GELU()
@@ -21,7 +22,10 @@ class ElectraClassificationHead(torch.nn.Module):
         x = features[:, 0, :]  # take <s> token (equiv. to [CLS])
         x = self.dropout(x)
         x = self.dense(x)
-        x = self.gelu(x)  # although BERT uses tanh here, it seems Electra authors used gelu here
+        x = self.gelu(x)
+        x = self.dropout(x)
+        x = self.dense2(x)
+        x = self.gelu(x)
         x = self.dropout(x)
         x = self.out_proj(x)
         return x
