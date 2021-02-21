@@ -12,12 +12,11 @@ import random
 import time
 import datetime
 
-from transformers import ElectraTokenizer
+from transformers import ElectraTokenizer, ElectraForMultipleChoice
 from keras.preprocessing.sequence import pad_sequences
 from transformers import AdamW, ElectraConfig
 from transformers import get_linear_schedule_with_warmup
 
-from models import ElectraQAMulti
 
 parser = argparse.ArgumentParser(description='Get all command line arguments.')
 parser.add_argument('--batch_size', type=int, default=32, help='Specify the training batch size')
