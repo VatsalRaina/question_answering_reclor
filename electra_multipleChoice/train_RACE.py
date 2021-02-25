@@ -101,7 +101,8 @@ def main(args):
             four_inp_ids = []
             four_tok_type_ids = []
             question = questions[qu_num]
-            for opt in options:
+            opts = options[qu_num]
+            for opt in opts:
                 combo = context + " [SEP] " + question + " " + opt
                 inp_ids = tokenizer.encode(combo)
                 tok_type_ids = [0 if i<= inp_ids.index(102) else 1 for i in range(len(inp_ids))]
