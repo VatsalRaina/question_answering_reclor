@@ -29,6 +29,7 @@ parser.add_argument('--dropout', type=float, default=0.1, help='Specify the drop
 parser.add_argument('--n_epochs', type=int, default=10, help='Specify the number of epochs to train for')
 parser.add_argument('--seed', type=int, default=1, help='Specify the global random seed')
 parser.add_argument('--train_data_path', type=str, help='Load path of training data')
+parser.add_argument('--dev_data_path', type=str, help='Load path of dev data')
 parser.add_argument('--save_path', type=str, help='Load path to which trained model will be saved')
 parser.add_argument('--model_path', type=str, help='Trained RACE model to load')
 
@@ -69,6 +70,9 @@ def main(args):
     with open(args.train_data_path) as f:
         train_data = json.load(f)
 
+    with open(args.dev_data_path) as f:
+        dev_data = json.load(f)
+
     electra_base = "google/electra-base-discriminator"
     electra_large = "google/electra-large-discriminator"
     tokenizer = ElectraTokenizer.from_pretrained(electra_large, do_lower_case=True)
@@ -95,6 +99,30 @@ def main(args):
         four_tok_type_ids = pad_sequences(four_tok_type_ids, maxlen=MAXLEN, dtype="long", value=0, truncating="post", padding="post")
         input_ids.append(four_inp_ids)
         token_type_ids.append(four_tok_type_ids)
+
+    dev_labels = []
+    dev_input_ids = []
+    dev_token_type_ids = []
+
+    for item in dev_data:
+        context = item["context"]
+        question = item["question"]
+        lab = item["label"]
+        dev_labels.append(lab)
+        four_inp_ids = []
+        four_tok_type_ids = []
+        for i, ans in enumerate(item["answers"]):
+            combo = context + " [SEP] " + question + " " + ans
+            inp_ids = tokenizer.encode(combo)
+            tok_type_ids = [0 if i<= inp_ids.index(102) else 1 for i in range(len(inp_ids))]
+            four_inp_ids.append(inp_ids)
+            four_tok_type_ids.append(tok_type_ids)
+        four_inp_ids = pad_sequences(four_inp_ids, maxlen=MAXLEN, dtype="long", value=0, truncating="post", padding="post")
+        four_tok_type_ids = pad_sequences(four_tok_type_ids, maxlen=MAXLEN, dtype="long", value=0, truncating="post", padding="post")
+        dev_input_ids.append(four_inp_ids)
+        dev_token_type_ids.append(four_tok_type_ids)
+
+
     # Create attention masks
     attention_masks = []
     for sen in input_ids:
@@ -103,6 +131,17 @@ def main(args):
             att_mask = [int(token_id > 0) for token_id in opt]
             sen_attention_masks.append(att_mask)
         attention_masks.append(sen_attention_masks)
+
+    # Create attention masks
+    dev_attention_masks = []
+    for sen in dev_input_ids:
+        sen_attention_masks = []
+        for opt in sen:
+            att_mask = [int(token_id > 0) for token_id in opt]
+            sen_attention_masks.append(att_mask)
+        dev_attention_masks.append(sen_attention_masks)
+
+
     # Convert to torch tensors
     labels = torch.tensor(labels)
     labels = labels.long().to(device)
@@ -113,10 +152,24 @@ def main(args):
     attention_masks = torch.tensor(attention_masks)
     attention_masks = attention_masks.long().to(device)
 
+    # Convert to torch tensors
+    dev_labels = torch.tensor(dev_labels)
+    dev_labels = dev_labels.long().to(device)
+    dev_input_ids = torch.tensor(dev_input_ids)
+    dev_input_ids = dev_input_ids.long().to(device)
+    dev_token_type_ids = torch.tensor(dev_token_type_ids)
+    dev_token_type_ids = dev_token_type_ids.long().to(device)
+    dev_attention_masks = torch.tensor(dev_attention_masks)
+    dev_attention_masks = dev_attention_masks.long().to(device)
+
     # Create the DataLoader for training set.
     train_data = TensorDataset(input_ids, token_type_ids, attention_masks, labels)
     train_sampler = RandomSampler(train_data)
     train_dataloader = DataLoader(train_data, sampler=train_sampler, batch_size=args.batch_size)
+
+    # Create dataloader for dev set
+    ds = TensorDataset(dev_input_ids, dev_token_type_ids, dev_attention_masks, dev_labels)
+    dev_dataloader = DataLoader(ds, batch_size=args.batch_size, shuffle=False)
 
     model = torch.load(args.model_path, map_location=device).to(device)
 
@@ -163,7 +216,7 @@ def main(args):
             outputs = model(input_ids=b_input_ids, attention_mask=b_att_msks, token_type_ids=b_tok_typ_ids, labels=b_labs)
             loss = outputs[0]
             total_loss += loss.item()
-            print(loss.item())
+            # print(loss.item())
             optimizer.zero_grad()
             loss.backward()
             # Clip the norm of the gradients to 1.0.
@@ -186,6 +239,22 @@ def main(args):
         print("")
         print("  Average training loss: {0:.2f}".format(avg_train_loss))
         print("  Training epoch took: {:}".format(format_time(time.time() - t0)))
+
+        # Get validation loss
+        dev_loss = 0
+        model.eval()
+        for step, batch in enumerate(dev_dataloader):
+            b_input_ids = batch[0].to(device)
+            b_tok_typ_ids = batch[1].to(device)
+            b_att_msks = batch[2].to(device)
+            b_labs = batch[3].to(device)
+            outputs = model(input_ids=b_input_ids, attention_mask=b_att_msks, token_type_ids=b_tok_typ_ids, labels=b_labs)
+            loss = outputs[0]
+            dev_loss += loss.item()
+        avg_dev_loss = dev_loss / len(dev_dataloader)
+
+        print("")
+        print("  Average dev loss: {0:.2f}".format(avg_dev_loss))
 
     # Save the model to a file
     file_path = args.save_path+'electra_QA_MC_seed'+str(args.seed)+'.pt'
