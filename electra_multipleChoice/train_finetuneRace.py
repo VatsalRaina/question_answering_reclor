@@ -169,7 +169,7 @@ def main(args):
 
     # Create dataloader for dev set
     ds = TensorDataset(dev_input_ids, dev_token_type_ids, dev_attention_masks, dev_labels)
-    dev_dataloader = DataLoader(ds, batch_size=1, shuffle=False)
+    dev_dataloader = DataLoader(ds, batch_size=args.batch_size, shuffle=False)
 
     model = torch.load(args.model_path, map_location=device).to(device)
 
@@ -248,7 +248,8 @@ def main(args):
             b_tok_typ_ids = batch[1].to(device)
             b_att_msks = batch[2].to(device)
             b_labs = batch[3].to(device)
-            outputs = model(input_ids=b_input_ids, attention_mask=b_att_msks, token_type_ids=b_tok_typ_ids, labels=b_labs)
+            with torch.no_grad():
+                outputs = model(input_ids=b_input_ids, attention_mask=b_att_msks, token_type_ids=b_tok_typ_ids, labels=b_labs)
             loss = outputs[0]
             dev_loss += loss.item()
         avg_dev_loss = dev_loss / len(dev_dataloader)
