@@ -169,7 +169,7 @@ def main(args):
 
     # Create dataloader for dev set
     ds = TensorDataset(dev_input_ids, dev_token_type_ids, dev_attention_masks, dev_labels)
-    dev_dataloader = DataLoader(ds, batch_size=args.batch_size, shuffle=False)
+    dev_dataloader = DataLoader(ds, batch_size=1, shuffle=False)
 
     model = torch.load(args.model_path, map_location=device).to(device)
 
