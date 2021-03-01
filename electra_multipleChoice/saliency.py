@@ -117,14 +117,14 @@ def main(args):
     logit_optD = logits[3]
 
     # Get saliency relative to option A prediction
-    logit_optA.backward()
+    logit_optB.backward()
 
     saliency_max = torch.squeeze(torch.norm(embedded.grad.data.abs(), dim=3))
     print(saliency_max.size())
     saliency_max = saliency_max.detach().cpu().numpy()
 
     # Get the saliency values for option A specifically
-    saliency_max = saliency_max[0, :]
+    saliency_max = saliency_max[1, :]
     # Get rid of the first and last tokens
     saliency_max = saliency_max[1:-1]
 
@@ -133,7 +133,7 @@ def main(args):
 
     print(question)
     print(item["answers"])
-    ans = item["answers"][0]
+    ans = item["answers"][1]
     combo = context + " [SEP] " + question + " " + ans
     print(combo)
     words = tokenizer.tokenize(combo)
@@ -145,7 +145,7 @@ def main(args):
     plt.barh(xx, list(saliency_max)[::-1])
     plt.yticks(xx, labels=np.flip(words), fontsize=40)
     plt.xticks(fontsize=40)
-    plt.ylabel('Article + <SEP> + Question + OptA')
+    plt.ylabel('Article + <SEP> + Question + OptB')
     plt.title('Salient words identification')
     plt.ylim([-2, M+2])
     plt.savefig('./saliency.png')
