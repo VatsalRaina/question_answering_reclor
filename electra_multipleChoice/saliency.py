@@ -137,6 +137,7 @@ def main(args):
     words = tokenizer.tokenize(combo)
 
     M = len(words)
+    saliency_max = saliency_max[:M]
     xx = np.linspace(0, M, M)
     plt.figure(figsize=(40,60))
     plt.barh(xx, list(saliency_max)[::-1])
