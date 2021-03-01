@@ -134,6 +134,7 @@ def main(args):
 
     ans = item["answers"][0]
     combo = context + " [SEP] " + question + " " + ans
+    print(combo)
     words = tokenizer.tokenize(combo)
 
     M = len(words)
