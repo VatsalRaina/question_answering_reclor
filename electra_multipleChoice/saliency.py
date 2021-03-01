@@ -119,7 +119,8 @@ def main(args):
     # Get saliency relative to option A prediction
     logit_optA.backward()
 
-    saliency_max = torch.norm(embedded.grad.data.abs(), dim=2)
+    saliency_max = torch.norm(embedded.grad.data.abs(), dim=3)
+    print(saliency_max.size())
     saliency_max = saliency_max.detach().cpu().numpy()
 
     # Get the saliency values for option A specifically
