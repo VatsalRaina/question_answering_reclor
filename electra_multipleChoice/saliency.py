@@ -105,10 +105,11 @@ def main(args):
     embedding_matrix = model.electra.embeddings.word_embeddings
     embedded = torch.tensor(embedding_matrix(input_ids), requires_grad=True)
     # print(embedded)
-    # print(embedded.size())
+    print(embedded.size())
 
     outputs = model(inputs_embeds=embedded, attention_mask=attention_masks, token_type_ids=token_type_ids)
     logits = torch.squeeze(outputs[0])
+    print(logits.size())
 
     logit_optA = logits[0]
     logit_optB = logits[1]
