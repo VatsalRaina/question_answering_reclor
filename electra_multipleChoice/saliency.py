@@ -131,7 +131,8 @@ def main(args):
     # Normalise values
     saliency_max = saliency_max / np.sum(saliency_max)
 
-
+    print(question)
+    print(item["answers"])
     ans = item["answers"][0]
     combo = context + " [SEP] " + question + " " + ans
     print(combo)
