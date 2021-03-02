@@ -200,7 +200,7 @@ def main(args):
     plt.xticks(fontsize=40)
     plt.ylabel('Option A')
     plt.ylim([-2, M+2])
-    plt.xlim([0.0, 0.08])
+    #plt.xlim([0.0, 0.08])
     plt.savefig('./saliencyA.png')
     plt.close()
 
