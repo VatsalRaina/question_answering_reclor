@@ -231,14 +231,14 @@ def main(args):
 
     print("New Stuff")
     # Try and compute the modified saliency scores.
-    grads = embedded.grad.data
-    embds = embedded.data / torch.norm(embedded.data.abs(), dim=3)
+    grads = torch.squeeze(embedded).grad.data
+    norm_embds = torch.squeeze(embedded.normalize(embedded, p=2, dim=3))
 
     grads = grads.detach().cpu().numpy()
-    embds = embds.detach().cpu().numpy()
+    norm_embds = norm_embds.detach().cpu().numpy()
 
     print(grads.shape)
-    print(embds.shape)
+    print(norm_embds.shape)
 
 
 
