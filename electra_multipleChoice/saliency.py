@@ -139,11 +139,16 @@ def main(args):
     ansD = item["answers"][3]
     wordsD = tokenizer.tokenize(ansD)
 
+    wordsQu = tokenizer.tokenize(question)
+    wordsCtxt = tokenizer.tokenize(context)
+    num_to_remove = len(wordsQu) + len(wordsCtxt) + 1
 
     # Get the saliency values for option A specifically
     saliency_maxA = saliency_max[0, :]
     # Get rid of the first and last tokens
     saliency_maxA = saliency_maxA[1:-1]
+    # Remove the context and the question and the <SEP> token
+    saliency_maxA = saliency_maxA[num_to_remove:]
     # Get saliency across the answer
     saliency_maxA = saliency_maxA[:len(wordsA)]
 
@@ -151,6 +156,8 @@ def main(args):
     saliency_maxB = saliency_max[1, :]
     # Get rid of the first and last tokens
     saliency_maxB = saliency_maxB[1:-1]
+    # Remove the context and the question and the <SEP> token
+    saliency_maxB = saliency_maxB[num_to_remove:]
     # Get saliency across the answer
     saliency_maxB = saliency_maxB[:len(wordsB)]
 
@@ -158,6 +165,8 @@ def main(args):
     saliency_maxC = saliency_max[2, :]
     # Get rid of the first and last tokens
     saliency_maxC = saliency_maxC[1:-1]
+    # Remove the context and the question and the <SEP> token
+    saliency_maxC = saliency_maxC[num_to_remove:]
     # Get saliency across the answer
     saliency_maxC = saliency_maxC[:len(wordsC)]
 
@@ -165,6 +174,8 @@ def main(args):
     saliency_maxD = saliency_max[3, :]
     # Get rid of the first and last tokens
     saliency_maxD = saliency_maxD[1:-1]
+    # Remove the context and the question and the <SEP> token
+    saliency_maxD = saliency_maxD[num_to_remove:]
     # Get saliency across the answer
     saliency_maxD = saliency_maxD[:len(wordsD)]
 
@@ -229,6 +240,9 @@ def main(args):
     plt.savefig('./saliencyD.png')
     plt.close()
 
+
+
+    """
     print("New Stuff")
     # Try and compute the modified saliency scores.
     grads = torch.squeeze(embedded).grad.data
@@ -239,6 +253,7 @@ def main(args):
 
     print(grads.shape)
     print(norm_embds.shape)
+    """
 
 
 
