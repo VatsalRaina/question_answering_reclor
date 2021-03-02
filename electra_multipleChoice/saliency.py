@@ -200,7 +200,7 @@ def main(args):
     plt.xticks(fontsize=40)
     plt.ylabel('Option A')
     plt.ylim([-2, M+2])
-    #plt.xlim([0.0, 0.08])
+    plt.xlim([0.0, 0.17])
     plt.savefig('./saliencyA.png')
     plt.close()
 
@@ -212,7 +212,7 @@ def main(args):
     plt.xticks(fontsize=40)
     plt.ylabel('Option B')
     plt.ylim([-2, M+2])
-    plt.xlim([0.0, 0.08])
+    plt.xlim([0.0, 0.17])
     plt.savefig('./saliencyB.png')
     plt.close()
 
@@ -224,7 +224,7 @@ def main(args):
     plt.xticks(fontsize=40)
     plt.ylabel('Option C')
     plt.ylim([0, M])
-    plt.xlim([0.0, 0.08])
+    plt.xlim([0.0, 0.17])
     plt.savefig('./saliencyC.png')
     plt.close()
 
@@ -236,7 +236,7 @@ def main(args):
     plt.xticks(fontsize=40)
     plt.ylabel('Option D')
     plt.ylim([-2, M+2])
-    plt.xlim([0.0, 0.08])
+    plt.xlim([0.0, 0.17])
     plt.savefig('./saliencyD.png')
     plt.close()
 
