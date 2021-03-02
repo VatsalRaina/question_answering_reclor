@@ -184,12 +184,12 @@ def main(args):
     M = len(wordsA)
     xx = np.linspace(0, M, M)
     plt.figure(figsize=(40,20))
-    plt.barh(xx, list(saliency_maxA)[::-1])
+    plt.barh(xx, list(saliency_maxA)[::-1], color="red")
     plt.yticks(xx, labels=np.flip(wordsA), fontsize=40)
     plt.xticks(fontsize=40)
     plt.ylabel('Option A')
     plt.ylim([-2, M+2])
-    plt.xlim([0.0, 0.8])
+    plt.xlim([0.0, 0.08])
     plt.savefig('./saliencyA.png')
     plt.close()
 
@@ -201,7 +201,7 @@ def main(args):
     plt.xticks(fontsize=40)
     plt.ylabel('Option B')
     plt.ylim([-2, M+2])
-    plt.xlim([0.0, 0.8])
+    plt.xlim([0.0, 0.08])
     plt.savefig('./saliencyB.png')
     plt.close()
 
@@ -213,7 +213,7 @@ def main(args):
     plt.xticks(fontsize=40)
     plt.ylabel('Option C')
     plt.ylim([0, M])
-    plt.xlim([0.0, 0.8])
+    plt.xlim([0.0, 0.08])
     plt.savefig('./saliencyC.png')
     plt.close()
 
