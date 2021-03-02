@@ -112,9 +112,15 @@ def main(args):
     print(logits.size())
 
     logit_optA = logits[0]
+    print(logit_optA)
     logit_optB = logits[1]
+    print(logit_optB)
     logit_optC = logits[2]
+    print(logit_optC)
     logit_optD = logits[3]
+    print(logit_optD)
+
+
 
     # Get saliency relative to option A prediction
     logts = logit_optA + logit_optB + logit_optC + logit_optD
@@ -183,6 +189,7 @@ def main(args):
     plt.xticks(fontsize=40)
     plt.ylabel('Option A')
     plt.ylim([-2, M+2])
+    plt.xlim([0.0, 0.8])
     plt.savefig('./saliencyA.png')
     plt.close()
 
@@ -194,6 +201,7 @@ def main(args):
     plt.xticks(fontsize=40)
     plt.ylabel('Option B')
     plt.ylim([-2, M+2])
+    plt.xlim([0.0, 0.8])
     plt.savefig('./saliencyB.png')
     plt.close()
 
@@ -204,7 +212,8 @@ def main(args):
     plt.yticks(xx, labels=np.flip(wordsC), fontsize=40)
     plt.xticks(fontsize=40)
     plt.ylabel('Option C')
-    plt.ylim([-2, M+2])
+    plt.ylim([0, M])
+    plt.xlim([0.0, 0.8])
     plt.savefig('./saliencyC.png')
     plt.close()
 
@@ -216,6 +225,7 @@ def main(args):
     plt.xticks(fontsize=40)
     plt.ylabel('Option D')
     plt.ylim([-2, M+2])
+    plt.xlim([0.0, 0.8])
     plt.savefig('./saliencyD.png')
     plt.close()
 
