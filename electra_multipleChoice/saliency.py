@@ -117,35 +117,71 @@ def main(args):
     logit_optD = logits[3]
 
     # Get saliency relative to option A prediction
-    logit_optB.backward()
+    logts = logit_optA + logit_optB + logit_optC + logit_optD
+    logts.backward()
 
     saliency_max = torch.squeeze(torch.norm(embedded.grad.data.abs(), dim=3))
     print(saliency_max.size())
     saliency_max = saliency_max.detach().cpu().numpy()
 
-    # Get the saliency values for option A specifically
-    saliency_max = saliency_max[1, :]
-    # Get rid of the first and last tokens
-    saliency_max = saliency_max[1:-1]
+    ansA = item["answers"][0]
+    wordsA = tokenizer.tokenize(ansA)
+    ansB = item["answers"][1]
+    wordsB = tokenizer.tokenize(ansB)
+    ansC = item["answers"][2]
+    wordsC = tokenizer.tokenize(ansC)
+    ansD = item["answers"][3]
+    wordsD = tokenizer.tokenize(ansD)
 
-    # Normalise values
-    saliency_max = saliency_max / np.sum(saliency_max)
+
+    # Get the saliency values for option A specifically
+    saliency_maxA = saliency_max[0, :]
+    # Get rid of the first and last tokens
+    saliency_maxA = saliency_maxA[1:-1]
+    # Get saliency across the answer
+    saliency_maxA = saliency_maxA[:len(wordsA)]
+
+    # Get the saliency values for option A specifically
+    saliency_maxB = saliency_max[1, :]
+    # Get rid of the first and last tokens
+    saliency_maxB = saliency_maxB[1:-1]
+    # Get saliency across the answer
+    saliency_maxB = saliency_maxB[:len(wordsB)]
+
+    # Get the saliency values for option A specifically
+    saliency_maxC = saliency_max[2, :]
+    # Get rid of the first and last tokens
+    saliency_maxC = saliency_maxC[1:-1]
+    # Get saliency across the answer
+    saliency_maxC = saliency_maxC[:len(wordsC)]
+
+    # Get the saliency values for option A specifically
+    saliency_maxD = saliency_max[3, :]
+    # Get rid of the first and last tokens
+    saliency_maxD = saliency_maxD[1:-1]
+    # Get saliency across the answer
+    saliency_maxD = saliency_maxD[:len(wordsD)]
+
+    # Normalise values across all answer options
+    saliency_maxA = saliency_maxA / (np.sum(saliency_maxA)+np.sum(saliency_maxB)+np.sum(saliency_maxC)+np.sum(saliency_maxD))
+    saliency_maxB = saliency_maxB / (np.sum(saliency_maxA)+np.sum(saliency_maxB)+np.sum(saliency_maxC)+np.sum(saliency_maxD))
+    saliency_maxC = saliency_maxC / (np.sum(saliency_maxA)+np.sum(saliency_maxB)+np.sum(saliency_maxC)+np.sum(saliency_maxD))
+    saliency_maxD = saliency_maxD / (np.sum(saliency_maxA)+np.sum(saliency_maxB)+np.sum(saliency_maxC)+np.sum(saliency_maxD))
 
     print(question)
     print(item["answers"])
-    ans = item["answers"][1]
+    ansA = item["answers"][0]
     combo = context + " [SEP] " + question + " " + ans
     print(combo)
-    words = tokenizer.tokenize(combo)
+    # words = tokenizer.tokenize(combo)
 
-    M = len(words)
-    saliency_max = saliency_max[:M]
+    M = len(wordsA)
     xx = np.linspace(0, M, M)
     plt.figure(figsize=(40,60))
     plt.barh(xx, list(saliency_max)[::-1])
-    plt.yticks(xx, labels=np.flip(words), fontsize=40)
+    plt.yticks(xx, labels=np.flip(wordsA), fontsize=40)
     plt.xticks(fontsize=40)
-    plt.ylabel('Article + <SEP> + Question + OptB')
+    plt.ylabel('Option A')
     plt.title('Salient words identification')
     plt.ylim([-2, M+2])
     plt.savefig('./saliency.png')
