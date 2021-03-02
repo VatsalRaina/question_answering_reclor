@@ -229,6 +229,20 @@ def main(args):
     plt.savefig('./saliencyD.png')
     plt.close()
 
+    print("New Stuff")
+    # Try and compute the modified saliency scores.
+    grads = embedded.grad.data
+    embds = embedded.data / torch.norm(embedded.data.abs(), dim=3)
+
+    grads = grads.detach().cpu().numpy()
+    embds = embds.detach().cpu().numpy()
+
+    print(grads.shape)
+    print(embds.shape)
+
+
+
+
 
 if __name__ == '__main__':
     args = parser.parse_args()
