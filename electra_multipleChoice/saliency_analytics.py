@@ -71,6 +71,7 @@ def main(args):
     for item in test_data:
         if counter==10:
             break
+        counter+=1
         context = item["context"]
         question = item["question"]
         four_inp_ids = []
