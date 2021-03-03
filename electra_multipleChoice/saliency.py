@@ -64,7 +64,7 @@ def main(args):
     electra_large = "google/electra-large-discriminator"
     tokenizer = ElectraTokenizer.from_pretrained(electra_large, do_lower_case=True)
 
-    item = test_data[1]
+    item = test_data[2]
 
     context = item["context"]
     question = item["question"]
