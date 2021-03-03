@@ -181,10 +181,11 @@ def main(args):
     saliency_maxD = saliency_maxD[:len(wordsD)]
 
     # Normalise values across all answer options
-    saliency_maxA = saliency_maxA / (np.sum(saliency_maxA)+np.sum(saliency_maxB)+np.sum(saliency_maxC)+np.sum(saliency_maxD))
-    saliency_maxB = saliency_maxB / (np.sum(saliency_maxA)+np.sum(saliency_maxB)+np.sum(saliency_maxC)+np.sum(saliency_maxD))
-    saliency_maxC = saliency_maxC / (np.sum(saliency_maxA)+np.sum(saliency_maxB)+np.sum(saliency_maxC)+np.sum(saliency_maxD))
-    saliency_maxD = saliency_maxD / (np.sum(saliency_maxA)+np.sum(saliency_maxB)+np.sum(saliency_maxC)+np.sum(saliency_maxD))
+    sal_maxA = saliency_maxA / (np.sum(saliency_maxA)+np.sum(saliency_maxB)+np.sum(saliency_maxC)+np.sum(saliency_maxD))
+    sal_maxB = saliency_maxB / (np.sum(saliency_maxA)+np.sum(saliency_maxB)+np.sum(saliency_maxC)+np.sum(saliency_maxD))
+    sal_maxC = saliency_maxC / (np.sum(saliency_maxA)+np.sum(saliency_maxB)+np.sum(saliency_maxC)+np.sum(saliency_maxD))
+    sal_maxD = saliency_maxD / (np.sum(saliency_maxA)+np.sum(saliency_maxB)+np.sum(saliency_maxC)+np.sum(saliency_maxD))
+
 
     print(question)
     print(item["answers"])
@@ -193,54 +194,55 @@ def main(args):
     print(combo)
     # words = tokenizer.tokenize(combo)
 
+
+
     M = len(wordsA)
     xx = np.linspace(0, M, M)
     plt.figure(figsize=(40,20))
-    plt.barh(xx, list(saliency_maxA)[::-1], color="red")
+    plt.barh(xx, list(sal_maxA)[::-1], color="red")
     plt.yticks(xx, labels=np.flip(wordsA), fontsize=40)
     plt.xticks(fontsize=40)
     plt.ylabel('Option A')
     plt.ylim([-2, M+2])
-    plt.xlim([0.0, 0.17])
+    plt.xlim([0.0, 0.1])
     plt.savefig('./saliencyA.png')
     plt.close()
 
     M = len(wordsB)
     xx = np.linspace(0, M, M)
     plt.figure(figsize=(40,20))
-    plt.barh(xx, list(saliency_maxB)[::-1])
+    plt.barh(xx, list(sal_maxB)[::-1])
     plt.yticks(xx, labels=np.flip(wordsB), fontsize=40)
     plt.xticks(fontsize=40)
     plt.ylabel('Option B')
     plt.ylim([-2, M+2])
-    plt.xlim([0.0, 0.17])
+    plt.xlim([0.0, 0.1])
     plt.savefig('./saliencyB.png')
     plt.close()
 
     M = len(wordsC)
     xx = np.linspace(0, M, M)
     plt.figure(figsize=(40,20))
-    plt.barh(xx, list(saliency_maxC)[::-1])
+    plt.barh(xx, list(sal_maxC)[::-1])
     plt.yticks(xx, labels=np.flip(wordsC), fontsize=40)
     plt.xticks(fontsize=40)
     plt.ylabel('Option C')
     plt.ylim([0, M])
-    plt.xlim([0.0, 0.17])
+    plt.xlim([0.0, 0.1])
     plt.savefig('./saliencyC.png')
     plt.close()
 
     M = len(wordsD)
     xx = np.linspace(0, M, M)
     plt.figure(figsize=(40,20))
-    plt.barh(xx, list(saliency_maxD)[::-1])
+    plt.barh(xx, list(sal_maxD)[::-1])
     plt.yticks(xx, labels=np.flip(wordsD), fontsize=40)
     plt.xticks(fontsize=40)
     plt.ylabel('Option D')
     plt.ylim([-2, M+2])
-    plt.xlim([0.0, 0.17])
+    plt.xlim([0.0, 0.1])
     plt.savefig('./saliencyD.png')
     plt.close()
-
 
 
     """
@@ -255,9 +257,6 @@ def main(args):
     print(grads.shape)
     print(norm_embds.shape)
     """
-
-
-
 
 
 if __name__ == '__main__':
