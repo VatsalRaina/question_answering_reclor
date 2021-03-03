@@ -69,8 +69,8 @@ def main(args):
     total_saliencies = []
     counter = 0
     for item in test_data:
-        if counter==10:
-            break
+        # if counter==10:
+        #     break
         counter+=1
         context = item["context"]
         question = item["question"]
