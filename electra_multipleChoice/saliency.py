@@ -64,7 +64,7 @@ def main(args):
     electra_large = "google/electra-large-discriminator"
     tokenizer = ElectraTokenizer.from_pretrained(electra_large, do_lower_case=True)
 
-    item = test_data[2]
+    item = test_data[1]
 
     context = item["context"]
     question = item["question"]
@@ -101,6 +101,7 @@ def main(args):
 
     model = torch.load(args.model_path, map_location=device)
     model.eval().to(device)
+    model.zero_grad()
 
     embedding_matrix = model.electra.embeddings.word_embeddings
     embedded = torch.tensor(embedding_matrix(input_ids), requires_grad=True)
