@@ -72,7 +72,7 @@ def main(args):
         answers_list = item["answers"]
         # Rotate list one positon to the right
         answers_list = answers_list[1:]+answers_list[:1]
-        for i, ans in answers_list:
+        for i, ans in enumerate(answers_list):
             combo = context + " [SEP] " + question + " " + ans
             inp_ids = tokenizer.encode(combo)
             tok_type_ids = [0 if i<= inp_ids.index(102) else 1 for i in range(len(inp_ids))]
