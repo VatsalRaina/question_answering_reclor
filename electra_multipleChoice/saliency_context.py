@@ -64,7 +64,7 @@ def main(args):
     electra_large = "google/electra-large-discriminator"
     tokenizer = ElectraTokenizer.from_pretrained(electra_large, do_lower_case=True)
 
-    item = test_data[0]
+    item = test_data[1]
 
     context = item["context"]
     question = item["question"]
@@ -169,7 +169,7 @@ def main(args):
     M = len(wordsCtxt)
     xx = np.linspace(0, M, M)
     plt.figure(figsize=(40,20))
-    plt.barh(xx, list(context_saliencies)[::-1], color="red")
+    plt.barh(xx, list(context_saliencies)[::-1])
     plt.yticks(xx, labels=np.flip(wordsCtxt), fontsize=20)
     plt.xticks(fontsize=40)
     plt.ylabel('Context')
