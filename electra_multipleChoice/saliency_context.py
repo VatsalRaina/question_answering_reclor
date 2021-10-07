@@ -170,7 +170,7 @@ def main(args):
     xx = np.linspace(0, M, M)
     plt.figure(figsize=(40,20))
     plt.barh(xx, list(context_saliencies)[::-1], color="red")
-    plt.yticks(xx, labels=np.flip(wordsCtxt), fontsize=40)
+    plt.yticks(xx, labels=np.flip(wordsCtxt), fontsize=30)
     plt.xticks(fontsize=40)
     plt.ylabel('Context')
     plt.ylim([-2, M+2])
