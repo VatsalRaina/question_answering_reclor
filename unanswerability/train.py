@@ -165,13 +165,6 @@ def main(args):
             print(loss.item())
             optimizer.zero_grad()
             loss.backward()
-            # Clip the norm of the gradients to 1.0.
-            # This is to help prevent the "exploding gradients" problem.
-            # torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-            # if (step+1) % accumulation_steps == 0:
-            # Update parameters and take a step using the computed gradient.
-            # The optimizer dictates the "update rule"--how the parameters are
-            # modified based on their gradients, the learning rate, etc.
             optimizer.step()
             # Update the learning rate.
             scheduler.step()
