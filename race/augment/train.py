@@ -158,7 +158,7 @@ def main(args):
                 combo = context + " [SEP] " + question + " " + opt
                 inp_ids = tokenizer.encode(combo)
                 if len(inp_ids)>512:
-                    inp_ids = inp_ids[0] + inp_ids[-511:]
+                    inp_ids = [inp_ids[0]] + inp_ids[-511:]
                 tok_type_ids = [0 if i<= inp_ids.index(3) else 1 for i in range(len(inp_ids))]
                 four_inp_ids.append(inp_ids)
                 four_tok_type_ids.append(tok_type_ids)
@@ -175,7 +175,7 @@ def main(args):
             combo = context + " [SEP] " + question + " " + opt
             inp_ids = tokenizer.encode(combo)
             if len(inp_ids)>512:
-                inp_ids = inp_ids[0] + inp_ids[-511:]
+                inp_ids = [inp_ids[0]] + inp_ids[-511:]
             tok_type_ids = [0 if i<= inp_ids.index(102) else 1 for i in range(len(inp_ids))]
             four_inp_ids.append(inp_ids)
             four_tok_type_ids.append(tok_type_ids)
