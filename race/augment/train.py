@@ -13,9 +13,9 @@ import time
 import datetime
 
 from datasets import load_dataset
-from transformers import AlbertTokenizer, AlbertForMultipleChoice
+from transformers import ElectraTokenizer, ElectraForMultipleChoice
 from keras.preprocessing.sequence import pad_sequences
-from transformers import AdamW, AlbertConfig
+from transformers import AdamW, ElectraConfig
 from transformers import get_linear_schedule_with_warmup
 
 MAXLEN = 512
@@ -107,8 +107,9 @@ def main(args):
     # Choose device
     device = get_default_device()
 
-    albert_xxlarge = "albert-xxlarge-v2"
-    tokenizer = AlbertTokenizer.from_pretrained(albert_xxlarge, do_lower_case=True)
+    electra_base = "google/electra-base-discriminator"
+    electra_large = "google/electra-large-discriminator"
+    tokenizer = ElectraTokenizer.from_pretrained(electra_large, do_lower_case=True)
 
     with open(args.train_data_path + "middle.json") as f:
         middle_data = json.load(f)
@@ -159,7 +160,7 @@ def main(args):
                 inp_ids = tokenizer.encode(combo)
                 if len(inp_ids)>512:
                     inp_ids = [inp_ids[0]] + inp_ids[-511:]
-                tok_type_ids = [0 if i<= inp_ids.index(3) else 1 for i in range(len(inp_ids))]
+                tok_type_ids = [0 if i<= inp_ids.index(102) else 1 for i in range(len(inp_ids))]
                 four_inp_ids.append(inp_ids)
                 four_tok_type_ids.append(tok_type_ids)
             four_inp_ids = pad_sequences(four_inp_ids, maxlen=MAXLEN, dtype="long", value=0, truncating="post", padding="post")
@@ -207,7 +208,7 @@ def main(args):
     train_sampler = RandomSampler(train_data)
     train_dataloader = DataLoader(train_data, sampler=train_sampler, batch_size=args.batch_size)
 
-    model = AlbertForMultipleChoice.from_pretrained(albert_xxlarge).to(device)
+    model = ElectraForMultipleChoice.from_pretrained(electra_large).to(device)
 
     optimizer = AdamW(model.parameters(),
                     lr = args.learning_rate,
@@ -277,7 +278,7 @@ def main(args):
         print("  Training epoch took: {:}".format(format_time(time.time() - t0)))
 
     # Save the model to a file
-    file_path = args.save_path+'albert_QA_MC_seed'+str(args.seed)+'.pt'
+    file_path = args.save_path+'electra_QA_MC_seed'+str(args.seed)+'.pt'
     torch.save(model, file_path)
 
 if __name__ == '__main__':
