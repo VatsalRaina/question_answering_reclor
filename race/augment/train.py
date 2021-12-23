@@ -144,6 +144,9 @@ def main(args):
     count = 0
 
     for item in train_data:
+        count+=1
+        if count ==100:
+            break
         context = item["article"]
         questions = item["questions"]
         answers = item["answers"]
@@ -168,8 +171,13 @@ def main(args):
             input_ids.append(four_inp_ids)
             token_type_ids.append(four_tok_type_ids)
 
+    count = 0
     for ex in aug_data:
-        question, context, options = ex['question'], ex['context'], ex['options']
+        count+=1
+        if count ==100:
+            break
+        question, context, options, lab = ex['question'], ex['context'], ex['options'], ex['label']
+        labels.append(lab)
         four_inp_ids = []
         four_tok_type_ids = []
         for opt in options:
