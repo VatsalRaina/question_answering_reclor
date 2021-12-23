@@ -144,9 +144,9 @@ def main(args):
     count = 0
 
     for item in train_data:
-        count+=1
-        if count ==100:
-            break
+        # count+=1
+        # if count ==100:
+        #     break
         context = item["article"]
         questions = item["questions"]
         answers = item["answers"]
@@ -173,9 +173,9 @@ def main(args):
 
     count = 0
     for ex in aug_data:
-        count+=1
-        if count ==100:
-            break
+        # count+=1
+        # if count ==100:
+        #     break
         question, context, options, lab = ex['question'], ex['context'], ex['options'], ex['label']
         labels.append(lab)
         four_inp_ids = []
