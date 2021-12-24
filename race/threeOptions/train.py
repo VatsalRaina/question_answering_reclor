@@ -91,6 +91,8 @@ def main(args):
         for i, ans in enumerate(three_answer_options):
             combo = context + " [SEP] " + question + " " + ans
             inp_ids = tokenizer.encode(combo)
+            if len(inp_ids)>512:
+                inp_ids = [inp_ids[0]] + inp_ids[-511:]
             tok_type_ids = [0 if i<= inp_ids.index(102) else 1 for i in range(len(inp_ids))]
             three_inp_ids.append(inp_ids)
             three_tok_type_ids.append(tok_type_ids)
