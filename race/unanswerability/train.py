@@ -29,6 +29,8 @@ parser.add_argument('--dropout', type=float, default=0.1, help='Specify the drop
 parser.add_argument('--n_epochs', type=int, default=10, help='Specify the number of epochs to train for')
 parser.add_argument('--seed', type=int, default=1, help='Specify the global random seed')
 parser.add_argument('--train_data_path', type=str, help='Load path of training data')
+parser.add_argument('--train_data_half', type=int, default=0, help='Specify which half of data to train on. 0: all data; 1: first half; 2: second half')
+parser.add_argument('--model_path', type=str, help='Specify model path to load if training on second half')
 parser.add_argument('--save_path', type=str, help='Load path to which trained model will be saved')
 
 def format_time(elapsed):
@@ -67,6 +69,16 @@ def main(args):
 
     with open(args.train_data_path) as f:
         train_data = json.load(f)
+
+    if args.train_data_half != 0:
+        # Seed has already been set earlier
+        random.shuffle(train_data)
+        mid = len(train_data) // 2
+
+    if args.train_data_half == 1:
+        train_data = train_data[:mid]
+    elif args.train_data_half == 2:
+        train_data = train_data[mid:]
 
     electra_base = "google/electra-base-discriminator"
     electra_large = "google/electra-large-discriminator"
@@ -119,7 +131,10 @@ def main(args):
     train_sampler = RandomSampler(train_data)
     train_dataloader = DataLoader(train_data, sampler=train_sampler, batch_size=args.batch_size)
 
-    model = ElectraForMultipleChoice.from_pretrained(electra_large).to(device)
+    if args.train_data_half != 2:
+        model = ElectraForMultipleChoice.from_pretrained(electra_large).to(device)
+    else:
+        model = torch.load(args.model_path, map_location=device).to(device)
 
     optimizer = AdamW(model.parameters(),
                     lr = args.learning_rate,
