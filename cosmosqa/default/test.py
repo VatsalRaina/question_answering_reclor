@@ -54,8 +54,8 @@ def main(args):
     # Choose device
     device = get_default_device()
 
-    with open(args.test_data_path) as f:
-        test_data = json.load(f)
+    df = pd.read_csv(args.test_data_path)
+    test_data = df.to_dict('records')
 
     electra_base = "google/electra-base-discriminator"
     electra_large = "google/electra-large-discriminator"
@@ -68,9 +68,10 @@ def main(args):
     for item in test_data:
         context = item["context"]
         question = item["question"]
+        answers = [item["answer0"], item["answer1"], item["answer2"], item["answer3"]]
         four_inp_ids = []
         four_tok_type_ids = []
-        for i, ans in enumerate(item["answers"]):
+        for i, ans in enumerate(answers):
             combo = context + " [SEP] " + question + " " + ans
             inp_ids = tokenizer.encode(combo)
             tok_type_ids = [0 if i<= inp_ids.index(102) else 1 for i in range(len(inp_ids))]
