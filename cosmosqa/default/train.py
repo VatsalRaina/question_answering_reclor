@@ -78,8 +78,7 @@ def main(args):
     token_type_ids = []
     count = 0
 
-    for item in train_data[:8]:
-        print(item)
+    for item in train_data:
         context = item["context"]
         question = item["question"]
         lab = item["label"]
