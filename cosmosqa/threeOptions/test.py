@@ -68,7 +68,7 @@ def main(args):
     for item in test_data:
         context = item["context"]
         question = item["question"]
-        answers = [item["answer1"], item["answer2"], item["answer3"]]
+        answers = [item["answer0"], item["answer1"], item["answer2"]]
         three_inp_ids = []
         three_tok_type_ids = []
         for i, ans in enumerate(answers):

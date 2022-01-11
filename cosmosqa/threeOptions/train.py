@@ -82,11 +82,11 @@ def main(args):
         context = item["context"]
         question = item["question"]
         lab = item["label"]
-        if lab == 0:
+        if lab == 3:
             # Remove unanswerable examples at training time
             continue
-        labels.append(lab-1)
-        answers = [item["answer1"], item["answer2"], item["answer3"]]
+        labels.append(lab)
+        answers = [item["answer0"], item["answer1"], item["answer2"]]
         three_inp_ids = []
         three_tok_type_ids = []
         for i, ans in enumerate(answers):
