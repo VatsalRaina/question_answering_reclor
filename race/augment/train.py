@@ -30,6 +30,7 @@ parser.add_argument('--n_epochs', type=int, default=10, help='Specify the number
 parser.add_argument('--seed', type=int, default=1, help='Specify the global random seed')
 parser.add_argument('--train_data_path', type=str, help='Load path of training data')
 parser.add_argument('--train_aug_data_path', type=str, help='Load path of augmented training data')
+parser.add_argument('--as_json', type=int, default=1, help='Whether the augmented data is in json format')
 parser.add_argument('--save_path', type=str, help='Load path to which trained model will be saved')
 
 def format_time(elapsed):
@@ -119,14 +120,21 @@ def main(args):
 
     # Get the augmented data and preprocess it correctly
 
-    with open(args.train_aug_data_path + "gen_questions.txt", 'r') as f:
-        all_gen_questions = [a.rstrip() for a in f.readlines()]
+    if args.as_json == 1:
 
-    with open(args.train_aug_data_path + "contexts.txt", 'r') as f:
-        all_contexts = [a.rstrip() for a in f.readlines()]
+        with open(args.train_aug_data_path) as f:
+            aug_data = json.load(f)
 
-    aug_data = organise_data(all_gen_questions, all_contexts)
-    aug_data = clean(aug_data)
+    else:
+
+        with open(args.train_aug_data_path + "gen_questions.txt", 'r') as f:
+            all_gen_questions = [a.rstrip() for a in f.readlines()]
+
+        with open(args.train_aug_data_path + "contexts.txt", 'r') as f:
+            all_contexts = [a.rstrip() for a in f.readlines()]
+
+        aug_data = organise_data(all_gen_questions, all_contexts)
+        aug_data = clean(aug_data)
 
     def asNum(x):
         if x=="A":
